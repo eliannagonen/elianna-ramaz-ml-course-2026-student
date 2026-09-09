@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from typing import Callable
 
-
 # ── Part 1: Lists ─────────────────────────────────────────────────────────────
 
 
