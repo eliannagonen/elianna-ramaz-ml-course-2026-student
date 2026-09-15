@@ -43,8 +43,21 @@ def load_songs(path: Path) -> list[dict]:
         >>> isinstance(songs[0]["year"], int)
         True
     """
-    raise NotImplementedError("Implement load_songs()")
+    with open(path, 'r', newline='') as file:
+        reader = csv.DictReader(file)
 
+        list_of_records = []
+
+        for row in reader:
+            row["year"] = int(row["year"])
+            row["weeks_on_chart"] = int(row["weeks_on_chart"])
+            row["peak_position"] = int(row["peak_position"])
+            row["streams_millions"] = float(row["streams_millions"])
+
+        list_of_records.append(row)
+
+    return list_of_records
+        
 
 class SongRanker:
     """Base class for ranking a list of songs by some criterion.
@@ -58,7 +71,8 @@ class SongRanker:
 
         Subclasses must override this.
         """
-        raise NotImplementedError("Implement SongRanker.score()")
+
+        
 
     def rank(self, songs: list[dict], n: int = 10) -> list[dict]:
         """Return the top n songs, highest score() first.

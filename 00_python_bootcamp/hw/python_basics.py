@@ -179,7 +179,7 @@ def sliding_window(items: list, size: int) -> list[list]:
         return []
 
     for i in range(len(items) - size + 1):
-        conseq_windows.append(items[i : size + i])
+        conseq_windows.append(items[i :size + i])
 
     return conseq_windows
 
