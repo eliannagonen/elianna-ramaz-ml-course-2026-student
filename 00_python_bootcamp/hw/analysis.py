@@ -54,7 +54,7 @@ def load_songs(path: Path) -> list[dict]:
             row["peak_position"] = int(row["peak_position"])
             row["streams_millions"] = float(row["streams_millions"])
 
-        list_of_records.append(row)
+            list_of_records.append(row)
 
     return list_of_records
         
@@ -72,7 +72,9 @@ class SongRanker:
         Subclasses must override this.
         """
 
+        raise NotImplementedError
         
+
 
     def rank(self, songs: list[dict], n: int = 10) -> list[dict]:
         """Return the top n songs, highest score() first.
@@ -92,21 +94,24 @@ class SongRanker:
             >>> top[0]["streams_millions"] >= top[1]["streams_millions"]
             True
         """
-        raise NotImplementedError("Implement SongRanker.rank()")
+        ranked_list = sorted(songs, key=self.score, reverse = True)
 
+        return ranked_list[:n]
+
+  
 
 class StreamsRanker(SongRanker):
     """Ranks songs by total streams_millions."""
 
     def score(self, song: dict) -> float:
-        raise NotImplementedError("Implement StreamsRanker.score()")
+        return song['streams_millions']
 
 
 class LongevityRanker(SongRanker):
     """Ranks songs by weeks_on_chart (how long they stuck around)."""
 
     def score(self, song: dict) -> float:
-        raise NotImplementedError("Implement LongevityRanker.score()")
+        return song['weeks_on_chart']
 
 
 def avg_weeks_by_genre(songs: list[dict]) -> dict[str, float]:
@@ -125,12 +130,24 @@ def avg_weeks_by_genre(songs: list[dict]) -> dict[str, float]:
         >>> all(isinstance(v, float) for v in avgs.values())
         True
     """
-    average = df.groupby("genre")["weeks_on_chart"].mean()
+    weeks_by_genre = {}
+    songs_by_genre = {}
     result = {}
-    for genre, avg in average.items():
-        result[genre] = float(avg)
+
+    for song in songs:
+        genre = song["genre"]
+        if genre in weeks_by_genre:
+            weeks_by_genre[genre] += song["weeks_on_chart"]
+            songs_by_genre[genre] += 1
+        else:
+            weeks_by_genre[genre] = song["weeks_on_chart"]
+            songs_by_genre[genre] = 1
+
+    for genre in weeks_by_genre:
+        result[genre] = weeks_by_genre[genre] / songs_by_genre[genre]
 
     return result
+
 
 def most_streamed_artist(songs: list[dict]) -> str:
     """Return the name of the artist with the highest total streams_millions.
@@ -148,10 +165,18 @@ def most_streamed_artist(songs: list[dict]) -> str:
         >>> isinstance(artist, str)
         True
     """
-    totals = df.groupby("artist")["streams_millions"].sum()
-    top_artist = str(totals.idxmax())
+    streams_by_artist = {}
 
-    return top_artist
+    for song in songs:
+        artist = song["artist"]
+
+        if artist in streams_by_artist:
+            streams_by_artist[artist] += song["streams_millions"]
+        else:
+            streams_by_artist[artist] = song["streams_millions"]
+
+    return max(streams_by_artist.keys(), key=streams_by_artist.get)
+    
 
 def hits_per_year(songs: list[dict], max_position: int = 10) -> dict[int, int]:
     """Count songs with peak_position <= max_position, grouped by year.
@@ -174,16 +199,19 @@ def hits_per_year(songs: list[dict], max_position: int = 10) -> dict[int, int]:
         True
     """
 
-    is_a_hit = df["peak_position"] <= max_position
-    hit_songs = df[is_a_hit]
-    counts = hit_songs.groupby("year").size()
+    hits_by_year = {}
 
-    result = {}
-    for year, count in counts.items():
-        result[year] = int(count)
+    for song in songs:
+        year = song["year"]
+        position = song["peak_position"]
 
-    return result
+        if position <= max_position:
+            if year in hits_by_year:
+                hits_by_year[year] += 1
+            else:
+                hits_by_year[year] = 1
 
+    return hits_by_year
 
 
 # ── Main: print results for writeup.md ────────────────────────────────────────
