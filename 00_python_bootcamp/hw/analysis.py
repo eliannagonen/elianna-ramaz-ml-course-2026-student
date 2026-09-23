@@ -175,7 +175,14 @@ def most_streamed_artist(songs: list[dict]) -> str:
         else:
             streams_by_artist[artist] = song["streams_millions"]
 
-    return max(streams_by_artist.keys(), key=streams_by_artist.get)
+    top_artist = None
+    top_streams = None
+    for artist in streams_by_artist:
+        if top_streams is None or streams_by_artist[artist] > top_streams:
+            top_artist = artist
+            top_streams = streams_by_artist[artist]
+
+    return top_artist
     
 
 def hits_per_year(songs: list[dict], max_position: int = 10) -> dict[int, int]:

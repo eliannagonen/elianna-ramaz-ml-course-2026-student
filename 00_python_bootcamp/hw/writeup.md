@@ -14,7 +14,7 @@ below. Replace each `[your answer here]` with your response.
 **Which genre averaged the most weeks on the Billboard chart, and how many
 songs is that average computed from?**
 
-Afrobeats with 30 weeks. 
+Afrobeats with 30 weeks from 1 song.
 
 ---
 
