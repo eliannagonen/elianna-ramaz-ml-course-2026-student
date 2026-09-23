@@ -130,17 +130,18 @@ def avg_weeks_by_genre(songs: list[dict]) -> dict[str, float]:
         >>> all(isinstance(v, float) for v in avgs.values())
         True
     """
+
     weeks_by_genre = {}
     songs_by_genre = {}
     result = {}
 
-    for song in songs:
-        genre = song["genre"]
+    for s in songs:
+        genre = s["genre"]
         if genre in weeks_by_genre:
-            weeks_by_genre[genre] += song["weeks_on_chart"]
+            weeks_by_genre[genre] += s["weeks_on_chart"]
             songs_by_genre[genre] += 1
         else:
-            weeks_by_genre[genre] = song["weeks_on_chart"]
+            weeks_by_genre[genre] = s["weeks_on_chart"]
             songs_by_genre[genre] = 1
 
     for genre in weeks_by_genre:
