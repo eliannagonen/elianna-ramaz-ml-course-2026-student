@@ -176,11 +176,11 @@ def most_streamed_artist(songs: list[dict]) -> str:
         else:
             streams_by_artist[artist] = song["streams_millions"]
 
-    top_artist = None
+    top_artist = ""
     top_streams = None
     for artist in streams_by_artist:
         if top_streams is None or streams_by_artist[artist] > top_streams:
-            top_artist = artist
+            top_artist = str(artist)
             top_streams = streams_by_artist[artist]
 
     return top_artist
