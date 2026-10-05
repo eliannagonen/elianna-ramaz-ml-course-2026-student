@@ -73,7 +73,7 @@ class SongRanker:
         """
 
         raise NotImplementedError
-        
+
 
 
     def rank(self, songs: list[dict], n: int = 10) -> list[dict]:
