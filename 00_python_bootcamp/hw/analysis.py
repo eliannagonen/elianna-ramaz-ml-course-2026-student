@@ -98,7 +98,7 @@ class SongRanker:
 
         return ranked_list[:n]
 
-  
+ 
 
 class StreamsRanker(SongRanker):
     """Ranks songs by total streams_millions."""
