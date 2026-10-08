@@ -40,7 +40,11 @@ def vector_add(u: list[float], v: list[float]) -> list[float]:
         Think about how to iterate over two lists simultaneously, pairing their
         elements at each position.
     """
-    raise NotImplementedError("Implement vector_add()")
+
+    if len(u) != len(v):
+        raise ValueError("Vectors are not the same length")
+
+    return [u[i] + v[i] for i in range(len(u))]
 
 
 def scalar_multiply(c: float, v: list[float]) -> list[float]:
@@ -61,8 +65,8 @@ def scalar_multiply(c: float, v: list[float]) -> list[float]:
         You know how to visit every element in a list. What would you do
         to each one?
     """
-    raise NotImplementedError("Implement scalar_multiply()")
 
+    return [c * x for x in v]
 
 def dot_product(u: list[float], v: list[float]) -> float:
     """Compute the dot product (inner product) of two vectors.
@@ -85,8 +89,8 @@ def dot_product(u: list[float], v: list[float]) -> float:
         You already know how to pair elements from two lists. The dot product
         needs one more step: combine those products into a single number.
     """
-    raise NotImplementedError("Implement dot_product()")
 
+    return math.sqrt(sum(x * x for x in v))
 
 def vector_magnitude(v: list[float]) -> float:
     """Compute the Euclidean (L2) magnitude (length) of a vector.
@@ -107,8 +111,8 @@ def vector_magnitude(v: list[float]) -> float:
         Look at the formula in the docstring — it expresses magnitude in terms
         of an operation you've already implemented.
     """
-    raise NotImplementedError("Implement vector_magnitude()")
 
+    return math.sqrt(sum(v[i] * v[i] for i in range(len(v))))
 
 def normalize_vector(v: list[float]) -> list[float]:
     """Return the unit vector in the same direction as v.
@@ -134,8 +138,12 @@ def normalize_vector(v: list[float]) -> list[float]:
         to be true about the magnitude before dividing, and what should happen
         if that condition fails.
     """
-    raise NotImplementedError("Implement normalize_vector()")
+    magnitude = vector_magnitude(v)
 
+    if magnitude == 0:
+        raise ValueError("v is the zero vector")
+
+    return [(v[i]) / (magnitude) for i in range(len(v))]
 
 def matrix_add(A: list[list[float]], B: list[list[float]]) -> list[list[float]]:
     """Return the element-wise sum of two matrices.
@@ -158,8 +166,15 @@ def matrix_add(A: list[list[float]], B: list[list[float]]) -> list[list[float]]:
         You have a function that adds two vectors. How could you apply it to
         each pair of corresponding rows?
     """
-    raise NotImplementedError("Implement matrix_add()")
 
+    
+     
+    # code from the add two vectors function:
+    #
+    # if len(u) != len(v):
+    #        raise ValueError("Vectors are not the same length")
+    #
+    # return [u[i] + v[i] for i in range(len(u))]
 
 def matrix_vector_multiply(A: list[list[float]], v: list[float]) -> list[float]:
     """Multiply a matrix A by a column vector v.
