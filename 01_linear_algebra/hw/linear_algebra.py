@@ -459,8 +459,11 @@ def cosine_similarity(u: torch.Tensor, v: torch.Tensor) -> float:
         Part 2. Handle the zero-vector case before dividing. Do not use
         torch.nn.functional.cosine_similarity.
     """
-    raise NotImplementedError("Implement cosine_similarity()")
 
+    if torch.linalg.norm(u) == 0 or torch.linalg.norm(v) == 0:
+            raise ValueError
+
+    return float(torch.dot(u,v) / (torch.linalg.norm(u) * torch.linalg.norm(v)))
 
 def row_normalize(A: torch.Tensor) -> torch.Tensor:
     """Normalize each row of a matrix to unit length.
