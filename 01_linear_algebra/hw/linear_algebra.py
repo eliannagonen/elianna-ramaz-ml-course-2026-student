@@ -498,8 +498,14 @@ def row_normalize(A: torch.Tensor) -> torch.Tensor:
         gives you a tensor of booleans) and raise ValueError.
         Do not use torch.nn.functional.normalize.
     """
-    raise NotImplementedError("Implement row_normalize()")
 
+    norms = torch.linalg.norm(A, dim=1)
+    
+    for norm in norms:
+        if norm == 0:
+            raise ValueError
+
+    return A / norms.unsqueeze(1)
 
 def pairwise_distances(A: torch.Tensor) -> torch.Tensor:
     """Compute the pairwise Euclidean distance between every row of A.
@@ -532,4 +538,8 @@ def pairwise_distances(A: torch.Tensor) -> torch.Tensor:
         you still have to decide which axis each copy gets and how to collapse
         the result into distances. Do not use torch.cdist.
     """
-    raise NotImplementedError("Implement pairwise_distances()")
+
+    A1 = A.unsqueeze(1)
+    A2 = A.unsqueeze(0)
+
+    return torch.linalg.norm(A1-A2, dim=2)
