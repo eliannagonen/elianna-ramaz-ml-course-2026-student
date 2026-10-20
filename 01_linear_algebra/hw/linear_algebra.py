@@ -90,7 +90,7 @@ def dot_product(u: list[float], v: list[float]) -> float:
         needs one more step: combine those products into a single number.
     """
 
-    return math.sqrt(sum(x * x for x in v))
+    return sum(u[i] * v[i] for i in range(len(v)))
 
 def vector_magnitude(v: list[float]) -> float:
     """Compute the Euclidean (L2) magnitude (length) of a vector.
@@ -167,14 +167,14 @@ def matrix_add(A: list[list[float]], B: list[list[float]]) -> list[list[float]]:
         each pair of corresponding rows?
     """
 
-    
+    if len(A) != len(B):
+        raise ValueError("matrices don't have identical dimensions")
+
+    for i in range(len(A)):
+        if len(A[i]) != len(B[i]):
+            raise ValueError("matricies don't have identical dimensions")
      
-    # code from the add two vectors function:
-    #
-    # if len(u) != len(v):
-    #        raise ValueError("Vectors are not the same length")
-    #
-    # return [u[i] + v[i] for i in range(len(u))]
+    return [vector_add(A[i], B[i]) for i in range(len(A))]
 
 def matrix_vector_multiply(A: list[list[float]], v: list[float]) -> list[float]:
     """Multiply a matrix A by a column vector v.
@@ -199,7 +199,8 @@ def matrix_vector_multiply(A: list[list[float]], v: list[float]) -> list[float]:
         computes exactly what each output element requires — apply it across the
         rows.
     """
-    raise NotImplementedError("Implement matrix_vector_multiply()")
+
+    return [dot_product(A[i], v) for i in range(len(A))]
 
 
 def matrix_multiply(A: list[list[float]], B: list[list[float]]) -> list[list[float]]:
@@ -225,8 +226,18 @@ def matrix_multiply(A: list[list[float]], B: list[list[float]]) -> list[list[flo
         could turn columns into something easier to work with. You may implement
         the next helper first.
     """
-    raise NotImplementedError("Implement matrix_multiply()")
+    B_T = matrix_transpose(B)
+    C = []
 
+    for i in range(len(A)):
+        row = []
+
+        for j in range(len(B_T)):
+            row.append(dot_product(A[i], B_T[j]))
+
+        C.append(row)
+
+    return C
 
 def matrix_transpose(A: list[list[float]]) -> list[list[float]]:
     """Return the transpose of matrix A.
@@ -251,7 +262,18 @@ def matrix_transpose(A: list[list[float]]) -> list[list[float]]:
         separate arguments. Either way, check the type of what you build
         against this function's return annotation before you trust it.
     """
-    raise NotImplementedError("Implement matrix_transpose()")
+    
+    T = []
+
+    for j in range(len(A[0])):
+        row = []
+
+        for i in range(len(A)):
+            row.append(A[i][j])
+
+        T.append(row)
+
+    return T
 
 
 # ── Part 2: PyTorch Mirrors ───────────────────────────────────────────────────
@@ -279,7 +301,8 @@ def dot_product_torch(u: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
         In Part 1 this took you a comprehension and a sum. PyTorch has a single
         function for it — check the lecture cheat sheet.
     """
-    raise NotImplementedError("Implement dot_product_torch()")
+
+    return torch.dot(u, v)
 
 
 def vector_magnitude_torch(v: torch.Tensor) -> torch.Tensor:
@@ -299,8 +322,8 @@ def vector_magnitude_torch(v: torch.Tensor) -> torch.Tensor:
         The norm of a vector is such a common operation that torch.linalg
         provides it directly.
     """
-    raise NotImplementedError("Implement vector_magnitude_torch()")
 
+    return torch.linalg.norm(v)
 
 def normalize_vector_torch(v: torch.Tensor) -> torch.Tensor:
     """Same operation as normalize_vector (Part 1), now using PyTorch.
@@ -322,7 +345,11 @@ def normalize_vector_torch(v: torch.Tensor) -> torch.Tensor:
         Dividing a tensor by a scalar divides every element — no loop needed.
         Remember to check for the zero vector first, just like in Part 1.
     """
-    raise NotImplementedError("Implement normalize_vector_torch()")
+
+    if torch.linalg.norm(v) == 0:
+        raise ValueError
+
+    return v / torch.linalg.norm(v)
 
 
 def matrix_vector_multiply_torch(A: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
@@ -344,7 +371,7 @@ def matrix_vector_multiply_torch(A: torch.Tensor, v: torch.Tensor) -> torch.Tens
     Hint:
         The @ operator from lecture handles matrix-vector products too.
     """
-    raise NotImplementedError("Implement matrix_vector_multiply_torch()")
+    return A @ v
 
 
 def matrix_multiply_torch(A: torch.Tensor, B: torch.Tensor) -> torch.Tensor:
@@ -367,8 +394,8 @@ def matrix_multiply_torch(A: torch.Tensor, B: torch.Tensor) -> torch.Tensor:
         tensor([[19., 22.],
                 [43., 50.]])
     """
-    raise NotImplementedError("Implement matrix_multiply_torch()")
 
+    return A @ B
 
 def matrix_transpose_torch(A: torch.Tensor) -> torch.Tensor:
     """Same operation as matrix_transpose (Part 1), now using PyTorch.
@@ -389,8 +416,8 @@ def matrix_transpose_torch(A: torch.Tensor) -> torch.Tensor:
         In Part 1 this took you a whole comprehension. In PyTorch the transpose
         is a single attribute access — see the lecture cheat sheet.
     """
-    raise NotImplementedError("Implement matrix_transpose_torch()")
 
+    return A.T
 
 # ── Part 2b: Harder Problems ──────────────────────────────────────────────────
 #
