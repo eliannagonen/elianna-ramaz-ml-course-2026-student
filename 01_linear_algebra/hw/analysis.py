@@ -47,10 +47,10 @@ def rotation_matrix(degrees: float) -> torch.Tensor:
     """
 
     radians = math.radians(degrees)
-    cos = math.cos(radians)
-    sin = math.sin(radians)
+    c = math.cos(radians)
+    s = math.sin(radians)
 
-    return torch.tensor([[cos, -sin], [sin, cos]], dtype=torch.float32)
+    return torch.tensor([[c, -s], [s, c]], dtype=torch.float32)
 
 
 def scaling_matrix(sx: float, sy: float) -> torch.Tensor:
@@ -99,7 +99,7 @@ def shear_matrix(k: float) -> torch.Tensor:
                 [0.0000, 1.0000]])
     """
 
-    return torch.tensor([[1, k],[0, 1]],dtype=torch.float32)
+    return torch.tensor([[1, k],[0, 1]], dtype=torch.float32)
 
 def apply_transform(points: torch.Tensor, matrix: torch.Tensor) -> torch.Tensor:
     """Apply a 2x2 transformation matrix to every point in a set of 2D points.

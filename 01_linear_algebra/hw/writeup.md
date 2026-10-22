@@ -16,7 +16,7 @@ For each of the three transformations, describe in a sentence or two:
 - What changed about the arrow (size? angles? direction it points? proportions?).
 - What stayed the same.
 
-[your answer here]
+The first one keeps the size the same, but rotates the arrow by 60 degrees. The second one keeps the arrow at the same angle, but scales its length by 2 and its width by 0.5. The third one 
 
 ---
 
