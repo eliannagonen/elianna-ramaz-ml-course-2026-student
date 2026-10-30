@@ -128,7 +128,7 @@ def autograd_gradient_quadratic(a: float, b: float, x_val: float) -> float:
     x = torch.tensor(x_val, requires_grad=True)
     f = a*x**2 + b*x
     f.backward()
-    return x.grad.item()
+    return float(x.grad)
 
 def autograd_gradient_composite(x_val: float) -> float:
     """Return d/dx of f(x) = (x**3 + 2)**2 at x = x_val using torch.autograd.
@@ -146,8 +146,11 @@ def autograd_gradient_composite(x_val: float) -> float:
     Hint:
         Same pattern as autograd_gradient_quadratic — just define f differently.
     """
-    raise NotImplementedError("Implement autograd_gradient_composite()")
 
+    x = torch.tensor(x_val, requires_grad=True)
+    f = (x**3 + 2)**2
+    f.backward()
+    return float(x.grad)
 
 def autograd_partial_gradients(x_val: float, y_val: float) -> tuple[float, float]:
     """Return (df/dx, df/dy) of f(x, y) = x**2 + 3*x*y + 2*y**2 using torch.autograd.
@@ -168,7 +171,13 @@ def autograd_partial_gradients(x_val: float, y_val: float) -> tuple[float, float
         scalar. Which tensors must be tracked, and where does each partial
         derivative end up?
     """
-    raise NotImplementedError("Implement autograd_partial_gradients()")
+
+    x = torch.tensor(x_val, requires_grad=True)
+    y = torch.tensor(y_val, requires_grad=True)
+
+    f = x**2 + 3*x*y + 2*y**2
+    f.backward()
+    return float(x.grad), float(y.grad)
 
 
 # ── Comparison table (teacher-provided — do not modify) ───────────────────────
