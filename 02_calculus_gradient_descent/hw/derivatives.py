@@ -45,8 +45,7 @@ def manual_gradient_quadratic(a: float, b: float, x_val: float) -> float:
         Apply the power rule to each term separately, then add.
         Recall: d/dx [c * x**n] = c * n * x**(n-1).
     """
-    raise NotImplementedError("Implement manual_gradient_quadratic()")
-
+    return 2*a*x_val + b
 
 def manual_gradient_composite(x_val: float) -> float:
     """Return d/dx of f(x) = (x**3 + 2)**2 evaluated at x = x_val.
@@ -72,8 +71,8 @@ def manual_gradient_composite(x_val: float) -> float:
         function stops and the outer operation begins, then differentiate each
         with the power rule from the previous problem.
     """
-    raise NotImplementedError("Implement manual_gradient_composite()")
 
+    return 2*(x_val**3 + 2) * (3*x_val**2)
 
 def manual_partial_gradients(x_val: float, y_val: float) -> tuple[float, float]:
     """Return (df/dx, df/dy) of f(x, y) = x**2 + 3*x*y + 2*y**2 at (x_val, y_val).
@@ -96,8 +95,8 @@ def manual_partial_gradients(x_val: float, y_val: float) -> tuple[float, float]:
         For df/dx: treat y as a constant and differentiate with respect to x.
         For df/dy: treat x as a constant and differentiate with respect to y.
     """
-    raise NotImplementedError("Implement manual_partial_gradients()")
 
+    return (2*x_val + 3*y_val) , (3*x_val + 4*y_val)
 
 # ── Part 2: Autograd ──────────────────────────────────────────────────────────
 
@@ -125,8 +124,11 @@ def autograd_gradient_quadratic(a: float, b: float, x_val: float) -> float:
         Python float, not a 0-dim tensor. See the autograd section of the
         lecture.
     """
-    raise NotImplementedError("Implement autograd_gradient_quadratic()")
 
+    x = torch.tensor(x_val, requires_grad=True)
+    f = a*x**2 + b*x
+    f.backward()
+    return x.grad.item()
 
 def autograd_gradient_composite(x_val: float) -> float:
     """Return d/dx of f(x) = (x**3 + 2)**2 at x = x_val using torch.autograd.
