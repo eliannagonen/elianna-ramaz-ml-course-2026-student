@@ -106,5 +106,3 @@ if needed.
 a)  I got g = 18. $x_{new}$ = 1 - (0.01)g = 1 - (0.01)(18) = 1 - 0.18 = 0.82. Since the gradient is positive, the update decreases x, moving left.
   
 b)  If the new gradient was g+2 = 18+2 = 20, the $x_{new}$ = 1 - (0.01)g = 1 - (0.01)(20) = 1 - 0.20 = 0.80. The new update is 0.02 smaller than part (a). The error does not change the direction because both gradients are positive, but it increases the distance of the step. 
-  
-c) 
