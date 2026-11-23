@@ -82,4 +82,4 @@ class LogisticRegression(LinearModel):
 
     def predict(self, X: torch.Tensor) -> torch.Tensor:
         probabilities = self.predict_proba(X)
-        return (probabilities > 0.5).to(torch.float32)
+        return (probabilities > 0.5).float()

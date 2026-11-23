@@ -15,6 +15,7 @@ Prerequisites: complete regression.py first.
 from __future__ import annotations
 
 import torch
+import sklearn
 from sklearn.datasets import fetch_california_housing, load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -27,11 +28,22 @@ from regression import LinearRegression, LogisticRegression
 def load_regression_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """See spec.pdf."""
     dataset = sklearn.datasets.fetch_california_housing()
-    X = dataset.data()
-    y = dataset.target()
+    X = dataset.data
+    y = dataset.target
 
-    split = sklearn.model_selection.train_test_split(test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.2, random_state=42)
     
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    X_train = scaler.transform(X_train)
+    X_test = scaler.transform(X_test)
+
+    X_train = torch.tensor(X_train, dtype=torch.float32)
+    X_test = torch.tensor(X_test, dtype=torch.float32)
+    y_train = torch.tensor(y_train, dtype=torch.float32)
+    y_test = torch.tensor(y_test, dtype=torch.float32)
+
+    return X_train, X_test, y_train, y_test 
 
 
 def train_linear_model(
@@ -41,7 +53,11 @@ def train_linear_model(
     epochs: int = 200,
 ) -> tuple[LinearRegression, list[float]]:
     """See spec.pdf."""
-    raise NotImplementedError("Implement train_linear_model()")
+
+    n_features = X_train.shape[1]
+    model = LinearRegression(n_features, lr)
+
+
 
 
 # ── Part 3b: Classification data + training ────────────────────────────────────
