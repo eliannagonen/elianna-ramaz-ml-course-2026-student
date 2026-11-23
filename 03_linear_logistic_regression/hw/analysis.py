@@ -26,7 +26,12 @@ from regression import LinearRegression, LogisticRegression
 
 def load_regression_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """See spec.pdf."""
-    raise NotImplementedError("Implement load_regression_data()")
+    dataset = sklearn.datasets.fetch_california_housing()
+    X = dataset.data()
+    y = dataset.target()
+
+    split = sklearn.model_selection.train_test_split(test_size=0.2, random_state=42)
+    
 
 
 def train_linear_model(
