@@ -58,7 +58,7 @@ def train_linear_model(
     """See spec.pdf."""
 
     n_features = X_train.shape[1]
-    model = LinearRegression(n_features, lr) # Create linear regression model w/ n_features and the given lr
+    model = LinearRegression(n_features, lr) # Create linear regression model with n_features and the given lr
     loss_history = model.fit(X_train, y_train, epochs) # call the fit function for "epochs" times
 
     return (model, loss_history)
@@ -70,8 +70,10 @@ def train_linear_model(
 def load_classification_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """See spec.pdf."""
     dataset = load_iris()
-    X = dataset.data[dataset.target < 2, :2]
-    y = dataset.target[dataset.target < 2]
+
+    filter = dataset.target < 2
+    X = dataset.data[filter, :2]
+    y = dataset.target[filter]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -92,7 +94,13 @@ def load_classification_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor
 
 def majority_class_baseline(y: torch.Tensor) -> float:
     """See spec.pdf section 6.4 (majority_class_baseline)."""
-    raise NotImplementedError("Implement majority_class_baseline()")
+    total_labels = y.shape[0]
+    labels, counts = torch.unique(y, return_counts = True)
+    most_common = counts.max()
+
+    accuracy = most_common/total_labels
+    
+    return accuracy.item()
 
 
 def train_logistic_model(
@@ -102,7 +110,12 @@ def train_logistic_model(
     epochs: int = 300,
 ) -> tuple[LogisticRegression, list[float]]:
     """See spec.pdf."""
-    raise NotImplementedError("Implement train_logistic_model()")
+
+    n_features = X_train.shape[1]
+    model = LogisticRegression(n_features, lr) # Create logistic regression model with n_features and the given lr
+    loss_history = model.fit(X_train, y_train, epochs) # call the fit function for "epochs" times
+    
+    return (model, loss_history)
 
 
 # ── Main: run experiments and produce plots ────────────────────────────────────
