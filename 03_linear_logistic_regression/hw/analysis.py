@@ -15,7 +15,6 @@ Prerequisites: complete regression.py first.
 from __future__ import annotations
 
 import torch
-import sklearn
 from sklearn.datasets import fetch_california_housing, load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -27,23 +26,27 @@ from regression import LinearRegression, LogisticRegression
 
 def load_regression_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """See spec.pdf."""
-    dataset = sklearn.datasets.fetch_california_housing()
-    X = dataset.data
-    y = dataset.target
+    dataset = fetch_california_housing() 
+    X = dataset.data # Input features
+    y = dataset.target # Target values
 
-    X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.2, random_state=42)
+    # Split the dataset into training data (what the model learns from) and testing sets (what we use to evaluate how well the model learned).
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    scaler = StandardScaler() # Scales the features
+    scaler.fit(X_train) # Calculates the mean and standard deviation of EACH feature using ONLY the training data
     
-    scaler = StandardScaler()
-    scaler.fit(X_train)
+    # Apply the calculated scaling to both datasets to standardize them:        
     X_train = scaler.transform(X_train)
     X_test = scaler.transform(X_test)
 
+    # Convert arrays to torch.float32
     X_train = torch.tensor(X_train, dtype=torch.float32)
     X_test = torch.tensor(X_test, dtype=torch.float32)
     y_train = torch.tensor(y_train, dtype=torch.float32)
     y_test = torch.tensor(y_test, dtype=torch.float32)
 
-    return X_train, X_test, y_train, y_test 
+    return X_train, X_test, y_train, y_test
 
 
 def train_linear_model(
@@ -55,9 +58,10 @@ def train_linear_model(
     """See spec.pdf."""
 
     n_features = X_train.shape[1]
-    model = LinearRegression(n_features, lr)
+    model = LinearRegression(n_features, lr) # Create linear regression model w/ n_features and the given lr
+    loss_history = model.fit(X_train, y_train, epochs) # call the fit function for "epochs" times
 
-
+    return (model, loss_history)
 
 
 # ── Part 3b: Classification data + training ────────────────────────────────────
@@ -65,7 +69,25 @@ def train_linear_model(
 
 def load_classification_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """See spec.pdf."""
-    raise NotImplementedError("Implement load_classification_data()")
+    dataset = load_iris()
+    X = dataset.data[dataset.target < 2, :2]
+    y = dataset.target[dataset.target < 2]
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    
+    X_train = scaler.transform(X_train)
+    X_test = scaler.transform(X_test)
+    
+    # Convert arrays to torch.float32
+    X_train = torch.tensor(X_train, dtype=torch.float32)
+    X_test = torch.tensor(X_test, dtype=torch.float32)
+    y_train = torch.tensor(y_train, dtype=torch.float32)
+    y_test = torch.tensor(y_test, dtype=torch.float32)
+    
+    return X_train, X_test, y_train, y_test
 
 
 def majority_class_baseline(y: torch.Tensor) -> float:
