@@ -30,17 +30,14 @@ def load_regression_data() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, to
     X = dataset.data # Input features
     y = dataset.target # Target values
 
-    # Split the dataset into training data (what the model learns from) and testing sets (what we use to evaluate how well the model learned).
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    scaler = StandardScaler() # Scales the features
-    scaler.fit(X_train) # Calculates the mean and standard deviation of EACH feature using ONLY the training data
-    
-    # Apply the calculated scaling to both datasets to standardize them:        
+    scaler = StandardScaler() 
+    scaler.fit(X_train) 
+           
     X_train = scaler.transform(X_train)
     X_test = scaler.transform(X_test)
 
-    # Convert arrays to torch.float32
     X_train = torch.tensor(X_train, dtype=torch.float32)
     X_test = torch.tensor(X_test, dtype=torch.float32)
     y_train = torch.tensor(y_train, dtype=torch.float32)
@@ -58,8 +55,8 @@ def train_linear_model(
     """See spec.pdf."""
 
     n_features = X_train.shape[1]
-    model = LinearRegression(n_features, lr) # Create linear regression model with n_features and the given lr
-    loss_history = model.fit(X_train, y_train, epochs) # call the fit function for "epochs" times
+    model = LinearRegression(n_features, lr) 
+    loss_history = model.fit(X_train, y_train, epochs) 
 
     return (model, loss_history)
 
@@ -112,8 +109,8 @@ def train_logistic_model(
     """See spec.pdf."""
 
     n_features = X_train.shape[1]
-    model = LogisticRegression(n_features, lr) # Create logistic regression model with n_features and the given lr
-    loss_history = model.fit(X_train, y_train, epochs) # call the fit function for "epochs" times
+    model = LogisticRegression(n_features, lr) 
+    loss_history = model.fit(X_train, y_train, epochs)
     
     return (model, loss_history)
 
